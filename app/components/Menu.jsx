@@ -11,7 +11,7 @@ const Menu = () => {
     const [openMenu, setOpenMenu] = useState(false);
     return (
         <div className="inline-block mt-10 md:ml-7 ml-5 relative">
-                <div className="bg-[#4FB7B3] rounded-full p-2  flex items-center justify-center w-12 h-12">
+                <div className="bg-[#4FB7B3] rounded-full p-2 flex items-center justify-center w-12 h-12">
                 <button onClick={() => setOpenMenu(!openMenu)} className="cursor-pointer text-xl font-bold">
                   <CiMenuBurger className="text-white"/>
                 </button>

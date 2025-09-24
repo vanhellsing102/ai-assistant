@@ -2,7 +2,7 @@
 import axios from "axios";
 import { useState } from "react";
 import { MdSend } from "react-icons/md";
-import { Atom, Commet } from "react-loading-indicators";
+import { Atom, Commet, OrbitProgress } from "react-loading-indicators";
 import ReactMarkdown from "react-markdown";
 import { GoCopy } from "react-icons/go";
 
@@ -49,7 +49,7 @@ const TextChat = () => {
         >
           {loading ? (
             <div className="flex justify-end w-full" style={{ transform: "scale(0.3)" }}>
-              <Commet color="#0000FF" size="small" text="" textColor="" />
+              <OrbitProgress variant="track-disc" color="#327fcd" speedPlus="3" easing="linear" />
             </div>
           ) : (
             <MdSend size={20} />
@@ -64,7 +64,7 @@ const TextChat = () => {
         } relative group`}
       >
         {loading ? (
-          <Atom color="#496e9b" size="medium" text="" textColor="" />
+          <Atom color={["#32cd32", "#327fcd", "#cd32cd", "#cd8032"]} size="medium" text="" textColor="" />
         ) : (
           <ReactMarkdown>{reply}</ReactMarkdown>
         )}
