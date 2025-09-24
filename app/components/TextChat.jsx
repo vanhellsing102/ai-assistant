@@ -1,32 +1,37 @@
 "use client";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MdSend } from "react-icons/md";
-import { Atom, Commet, OrbitProgress } from "react-loading-indicators";
+import { Atom, OrbitProgress } from "react-loading-indicators";
 import ReactMarkdown from "react-markdown";
 import { GoCopy } from "react-icons/go";
+import socket from "../socket.js";
 
 const TextChat = () => {
   const [loading, setLoading] = useState(false);
   const [reply, setReply] = useState("");
+
+  useEffect(() =>{
+    socket.on("receive_message", (data) =>{
+      setReply(data?.reply || "No reply");
+      setLoading(false);
+    })
+    return () =>{
+      socket.off("receive_message");
+    }
+  }, [])
+
   const handleText = (e) => {
     e.preventDefault();
     const form = new FormData(e.target);
     const text = form.get("text");
     setLoading(true);
     setReply("");
-    axios
-      .post("/api/chat", { text })
-      .then((res) => {
-        setReply(res?.data?.reply);
-        setLoading(false);
-        e.target.reset();
-        // console.log(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+    socket.emit("send_message", {text, lang: "bn"});
+    e.target.reset();
+  }
+  // console.log(reply);
+
   const handleCopyText = async() =>{
     await navigator.clipboard.writeText(reply);
   }

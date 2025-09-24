@@ -5,7 +5,7 @@ import TextChat from "./components/TextChat";
 const Home = () => {
   
   return (
-    <div className="">
+    <div>
       <TextChat></TextChat>
     </div>
   );
