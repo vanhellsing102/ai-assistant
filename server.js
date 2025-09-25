@@ -19,19 +19,21 @@ const io = new Server(httpServer, {
 io.on("connection", (socket) => {
   console.log("Socket connected:", socket.id);
 
-  socket.on("send_message", async ({ text, lang }) => {
-    // console.log("Message:", text, lang);
+  socket.on("send_message", async ({ text, langName, langType }) => {
+    // console.log("Message:", langName, langType);
     if(!text){
         return NextResponse.json({error: "Text is required"}, {status: 400});
       }
-    let prompt = text;
+    let prompt = `
+You are a friendly assistant.
+The user wants you to always respond ONLY in ${langName} (${langType}).
+- Do not translate the response into any other language.
+- Do not use English at all unless the requested language itself is English.
+- Every sentence of your reply must be written in ${langName} (${langType}).
+- After answering, ask one friendly related question in ${langName} (${langType}).
 
-    if (lang === "en") {
-      prompt = `You are a friendly assistant that answers in English. Always reply in a warm, polite, and conversational way. After answering the user's question, ask a related friendly question to keep the conversation going. Do not translate or add unnecessary explanation. Only answer the user's question directly and then ask a friendly question. User's question: ${text}`;
-    }
-    if (lang === "hi") {
-      prompt = `You are a friendly assistant that answers in Hindi. Always reply in a warm, polite, and conversational way. After answering the user's question, ask a related friendly question to keep the conversation going. Do not translate or add unnecessary explanation. Only answer the user's question directly and then ask a friendly question. User's question: ${text}`;
-    }
+User's question: ${text}
+`;
 
     try {
       const response = await axios.post(
