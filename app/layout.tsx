@@ -26,10 +26,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-blue-200`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-blue-200 relative`}
       >
         <h1 className='text-3xl md:text-4xl lg:text-5xl font-semibold text-center pt-5 md:pt-10 text-[#31326F]'>Al<span className='text-[#637AB9]'>pha</span></h1>
-        <Menu></Menu>
+        <div className="fixed top-5 left-5">
+          <Menu></Menu>
+        </div>
         {children}
       </body>
     </html>

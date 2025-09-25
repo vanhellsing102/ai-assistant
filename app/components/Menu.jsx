@@ -10,13 +10,13 @@ const Menu = () => {
     
     const [openMenu, setOpenMenu] = useState(false);
     return (
-        <div className="inline-block mt-10 md:ml-7 ml-5 relative">
+        <div className="inline-block relative">
                 <div className="bg-[#4FB7B3] rounded-full p-2 flex items-center justify-center w-12 h-12">
                 <button onClick={() => setOpenMenu(!openMenu)} className="cursor-pointer text-xl font-bold">
                   <CiMenuBurger className="text-white"/>
                 </button>
                 </div>
-                <div className="bg-[#4FB7B3] rounded-sm w-32 flex flex-col items-center absolute md:top-20 md:left-0 left-16 -top-5">
+                <div className="bg-[#4FB7B3] rounded-sm w-32 flex flex-col items-center absolute md:top-16 md:left-0 left-16 -top-3">
                   <ul className="w-full">
                     {
                       openMenu && navlinks.map(link =>

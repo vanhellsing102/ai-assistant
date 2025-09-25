@@ -9,6 +9,14 @@ import socket from "../socket.js";
 const TextChat = () => {
   const [loading, setLoading] = useState(false);
   const [reply, setReply] = useState("");
+  const [langName, setLangName] = useState("Bangla");
+  const [langType, setLangType] = useState("bn-BD");
+
+  // console.log(langType, langName);
+  const toggleLang = () => {
+    setLangType(langType === "bn-BD" ? "en-US" : "bn-BD");
+    setLangName(langType === "bn-BD" ? "English" : "Bangla");
+  };
 
   useEffect(() =>{
     socket.on("receive_message", (data) =>{
@@ -26,7 +34,7 @@ const TextChat = () => {
     const text = form.get("text");
     setLoading(true);
     setReply("");
-    socket.emit("send_message", {text, lang: "bn"});
+    socket.emit("send_message", {text, langName, langType});
     e.target.reset();
   }
   // console.log(reply);
@@ -34,11 +42,14 @@ const TextChat = () => {
   const handleCopyText = async() =>{
     await navigator.clipboard.writeText(reply);
   }
+
   return (
     <div className="flex justify-center items-center flex-col gap-5 px-3 md:mt-0 mt-10">
-      <form
-        onSubmit={handleText}
-        className="relative flex justify-center mt-7 md:mt-16 w-full md:w-[40%]"
+      <div className="flex flex-row-reverse items-center gap-2 w-full justify-center mt-7 md:mt-16">
+        
+        <form
+          onSubmit={handleText}
+        className="relative flex justify-center md:w-[40%]"
       >
         <input
           type="text"
@@ -59,7 +70,24 @@ const TextChat = () => {
             <MdSend size={20} />
           )}
         </button>
-      </form>
+        </form>
+        <div className="flex gap-1 items-center">
+          <div
+        onClick={toggleLang}
+        className={`w-9 h-5 flex items-center rounded-full p-1 cursor-pointer transition ${
+          langType === "bn-BD" ? "bg-[#4FB7B3]" : "bg-[#637AB9]"
+        }`}
+      >
+        <div
+          className={`w-3 h-3 bg-white/70 rounded-full shadow-md transform transition ${
+            langType === "bn-BD" ? "translate-x-0" : "translate-x-4"
+          }`}
+        ></div>
+          </div>
+          <span className="text-sm font-semibold">{langType === "bn-BD" ? "BN" : "EN"}</span>
+        </div>
+      </div>
+      
       <div
         disabled
         placeholder="Write your message..."
@@ -76,6 +104,7 @@ const TextChat = () => {
             <GoCopy className="hover:scale-105 transition-all duration-500"></GoCopy>
         </button>
       </div>
+      
     </div>
   );
 };

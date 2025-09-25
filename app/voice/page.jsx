@@ -73,7 +73,7 @@ const page = () => {
 // console.log(langType, name, langName);
     return (
         <div className="flex flex-col gap-5 items-center justify-center mt-20 md:mt-32">   
-                <select onChange={(e) => setSelectedVoice(e.target.value.split("|"))} className="ml-3 border-2 text-[15px] border-[#4FB7B3] outline-none py-1 px-2 rounded-sm appearance-none bg-white/30">
+                <select onChange={(e) => setSelectedVoice(e.target.value.split("|"))} className="border-2 text-[15px] border-[#4FB7B3] outline-none py-1 px-2 rounded-sm appearance-none bg-white/30">
                     <option value="" defaultChecked>Select Voice</option>
                     {
                         allLanguage.map(v =>(
