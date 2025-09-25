@@ -1,10 +1,10 @@
 "use client"
-import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { MdKeyboardVoice } from "react-icons/md";
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import "../styles/voice.css";
 import { ThreeDot } from "react-loading-indicators";
+import socket from "../socket.js";
 
 const page = () => {
     const { transcript, listening, resetTranscript } = useSpeechRecognition();
@@ -12,10 +12,11 @@ const page = () => {
     const [micOn, setMicOn] = useState(false);
     const timeoutRef = useRef(null);
     const [voices, setVoices] = useState([]);
+    const lastTranscriptRef = useRef("");
 
     const handleVoice = async() =>{
         if(!micOn){
-            SpeechRecognition.startListening({continuous: true, language: "bn-BD"});
+            SpeechRecognition.startListening({continuous: true, language: "bn-BD", interimResults: false });
             setMicOn(true);
         }
         else{
@@ -23,28 +24,25 @@ const page = () => {
             SpeechRecognition.stopListening();
         }
     }
-
     useEffect( () =>{
-        if(transcript && transcript.trim().length > 0){
+        socket.on("receive_message", (data) =>{
+            setReply(data.reply);
+        })
+        return () =>{
+            socket.off("receive_message");
+        }
+    }, [])
+    useEffect( () =>{
+        if(transcript && transcript.trim().length > 0 && transcript !== lastTranscriptRef.current){
             if(timeoutRef.current){
                 clearTimeout(timeoutRef.current);
             }
             timeoutRef.current = setTimeout(async() =>{
                 const text = transcript;
                 resetTranscript();
-                try {
-                    axios.post('/api/chat', {text, lang: "hi"})
-                    .then(res =>{
-                        setReply(res?.data?.reply || "Sorry, I didn’t understand.");
-                        // console.log(res?.data?.reply);
-                    })
-                    .catch(err =>{
-                        console.log(err);
-                    })
-                } catch (error) {
-                    console.log(error);
-                }
-            }, 3000)
+                socket.emit("send_message", {text, lang: "hi"});
+                setReply("");
+            }, 500)
         }
     }, [transcript, resetTranscript])
     
@@ -61,7 +59,7 @@ const page = () => {
   }, []);
   useEffect(() =>{
     const utterance = new SpeechSynthesisUtterance(reply);
-    utterance.voice = voices.find((v) => v.lang === "hi-IN") || voices[0] || null;
+    utterance.voice = voices.find((v) => v.lang === "hi-IN") || voices.find((v) => v.lang === "en-US") || voices[0] || null;
 
     utterance.pitch = 1;
     utterance.rate = 1;

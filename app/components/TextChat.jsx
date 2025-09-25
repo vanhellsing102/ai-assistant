@@ -1,5 +1,4 @@
 "use client";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { MdSend } from "react-icons/md";
 import { Atom, OrbitProgress } from "react-loading-indicators";
