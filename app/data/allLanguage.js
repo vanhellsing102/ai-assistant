@@ -116,19 +116,19 @@ const allLanguage = [
     },
     {
         id: 20, 
-        name: "Google 普通话（中国大陆",
+        name: "Google 普通话（中国大陆 ",
         langType: "zh-CN",
         langName: "Mandarin Chinese"
     },
     {
         id: 21, 
-        name: "Google 粤語（香港",
+        name: "Google 粤語（香港 ",
         langType: "zh-HK",
         langName: "Cantonese Chinese"
     },
     {
         id: 22, 
-        name: "Google 國語（臺灣",
+        name: "Google 國語（臺灣 ",
         langType: "zh-TW",
         langName: "Mandarin Chinese (Taiwan)"
     }

@@ -34,19 +34,19 @@ const navlinks = [
   {
     id: 1,
     route: "/",
-    title: "Text",
+    title: "Text Box",
     icon: CiText
   },
   {
     id: 2,
     route: "/voice",
-    title: "Voice",
+    title: "Voice Hub",
     icon: MdOutlineKeyboardVoice
   },
   {
     id: 3,
     route: "/camera",
-    title: "Camera",
+    title: "Mood Scan",
     icon: IoCameraOutline
   }
 ]

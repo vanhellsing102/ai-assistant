@@ -12,7 +12,7 @@ const TextChat = () => {
   const [langName, setLangName] = useState("Bangla");
   const [langType, setLangType] = useState("bn-BD");
 
-  // console.log(langType, langName);
+
   const toggleLang = () => {
     setLangType(langType === "bn-BD" ? "en-US" : "bn-BD");
     setLangName(langType === "bn-BD" ? "English" : "Bangla");
