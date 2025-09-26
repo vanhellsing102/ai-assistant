@@ -13,10 +13,14 @@ const page = () => {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({video: true});
                 streamRef.current = stream;
-                if(videoRef.current){
-                    videoRef.current.srcObject = stream;
-                }
                 setCameraOpen(true);
+                setTimeout( () =>{
+                    if(videoRef.current){
+                    videoRef.current.srcObject = stream;
+                    videoRef.current.play();
+                }
+                }, 100)
+                
                 console.log("Camera turn on");
             } catch (error) {
                 console.error("Camera access denied", error);
@@ -34,12 +38,15 @@ const page = () => {
         }
     }
     return (
-        <div className="flex items-center justify-center mt-20 md:mt-32">        
+        <div className="flex items-center justify-center mt-20 md:mt-16">        
             <div className="flex flex-col items-center gap-5">
                 <p className="font-semibold text-gray-700">Tap the camera icon for mood scan.</p>
-                <button onClick={handleCamera} className={`bg-gray-400/20 p-3 cursor-pointer rounded-full mt-0 md:mt-16`}>
+                <button onClick={handleCamera} className={`bg-gray-400/20 p-3 cursor-pointer rounded-full mt-0 md:mt-8`}>
                     <BsCameraFill size={50}/>
                 </button>
+                {
+                    cameraOpen && <video ref={videoRef} muted autoPlay className="h-52 w-full border border-red-600 object-cover"></video>
+                }
                 <div>{cameraOpen ? 
                 <ThreeDot variant="bounce" color={["#32cd32", "#327fcd", "#cd32cd", "#cd8032"]} size="small" text="" textColor="" />
                  : 
