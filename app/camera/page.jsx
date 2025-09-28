@@ -1,57 +1,68 @@
 "use client";
-import * as blazeface from "@tensorflow-models/blazeface";
 import { useEffect, useRef, useState } from "react";
 import { BsCameraFill } from "react-icons/bs";
 import { ThreeDot } from "react-loading-indicators";
 import * as tf from "@tensorflow/tfjs";
 import "@tensorflow/tfjs-backend-webgl";
+import * as blazeface from "@tensorflow-models/blazeface";
 
 const page = () => {
     const [cameraOpen, setCameraOpen] = useState(false);
     const [mood, setMood] = useState("");
     const [advice, setAdvice] = useState("");
-    const modelRef = useRef(null);
+    const [previousMood, setPreviousMood] = useState("");
     const streamRef = useRef(null);
     const videoRef = useRef(null);
     const intervalRef = useRef(null);
+    const modelRef = useRef(null);
 
     // model load-----------------
     useEffect(() => {
-    const loadModel = async () => {
-        await tf.setBackend("webgl");
-        await tf.ready();
-        console.log("TensorFlow.js backend ready:", tf.getBackend());
-        const model = await blazeface.load();
-        modelRef.current = model;
-        console.log("BlazeFace Model loaded ✅");
-    };
-    loadModel();
-}, []);
-useEffect(() => {
-    if (modelRef.current && cameraOpen) {
-        detectMood();
-    }
-}, [modelRef.current, cameraOpen]);
+        const loadModel = async () => {
+            await tf.setBackend("webgl");
+            await tf.ready();
+            console.log("TensorFlow.js backend ready:", tf.getBackend());
+            const model = await blazeface.load();
+            modelRef.current = model;
+            console.log("BlazeFace Model loaded ✅");
+        };
+        loadModel();
 
-    const handleCamera = async() =>{
-        if(!cameraOpen){
+        return () => {
+            if (intervalRef.current) clearInterval(intervalRef.current);
+            if (streamRef.current) {
+                streamRef.current.getTracks().forEach(track => track.stop());
+            }
+        };
+    }, []);
+
+    // Start detection when model loaded and camera open
+    useEffect(() => {
+        if (modelRef.current && cameraOpen) {
+            detectMood();
+        } else {
+            if (intervalRef.current) clearInterval(intervalRef.current);
+        }
+    }, [modelRef.current, cameraOpen]);
+
+    const handleCamera = async () => {
+        if (!cameraOpen) {
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({video: true});
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
                 streamRef.current = stream;
                 setCameraOpen(true);
-                setTimeout( () =>{
-                    if(videoRef.current){
-                    videoRef.current.srcObject = stream;
-                    videoRef.current.play();
-                }
-                }, 100)
-                
-                console.log("Camera turn on");
+                setTimeout(() => {
+                    if (videoRef.current) {
+                        videoRef.current.srcObject = stream;
+                        videoRef.current.play();
+                    }
+                }, 100);
+                console.log("Camera turned ON");
             } catch (error) {
                 console.error("Camera access denied", error);
             }
-        } else{
-            if(streamRef.current && typeof streamRef.current.getTracks === "function"){
+        } else {
+            if (streamRef.current && typeof streamRef.current.getTracks === "function") {
                 streamRef.current.getTracks().forEach(track => track.stop());
             }
             if (videoRef.current) {
@@ -61,29 +72,31 @@ useEffect(() => {
             setCameraOpen(false);
             setMood("");
             setAdvice("");
+            setPreviousMood("");
+            if (intervalRef.current) clearInterval(intervalRef.current);
             console.log("Camera turned OFF");
         }
-    }
+    };
 
     const detectMood = async () => {
-    if (!modelRef.current) return;
-    if (intervalRef.current) clearInterval(intervalRef.current);
+        if (!modelRef.current) return;
+        if (intervalRef.current) clearInterval(intervalRef.current);
 
-    intervalRef.current = setInterval(async () => {
-        if (videoRef.current) {
-            const predictions = await modelRef.current.estimateFaces(videoRef.current, false);
-            if (predictions.length > 0) {
-                const moods = ["happy", "sad", "angry", "neutral", "surprised"];
-                const detectedMood = moods[Math.floor(Math.random() * moods.length)];
-                setMood(detectedMood);
-                giveAdvice(detectedMood);
+        intervalRef.current = setInterval(async () => {
+            if (videoRef.current) {
+                const predictions = await modelRef.current.estimateFaces(videoRef.current, false);
+                if (predictions.length > 0) {
+                    const moods = ["happy", "sad", "angry", "neutral", "surprised"];
+                    const detectedMood = moods[Math.floor(Math.random() * moods.length)];
+                    if (detectedMood !== previousMood) {
+                        setMood(detectedMood);
+                        giveAdvice(detectedMood);
+                        setPreviousMood(detectedMood);
+                    }
+                }
             }
-        }
-    }, 3000);
-};
-if (intervalRef.current) {
-    clearInterval(intervalRef.current);
-}
+        }, 3000);
+    };
 
     const giveAdvice = (mood) => {
         const moodAdvice = {
@@ -96,6 +109,7 @@ if (intervalRef.current) {
         setAdvice(moodAdvice[mood] || "আমি বুঝতে পারছি না তোমার মুড 😅");
     };
     console.log(advice, mood);
+
     return (
         <div className="flex items-center justify-center mt-20 md:mt-16">        
             <div className="flex flex-col items-center gap-5">
