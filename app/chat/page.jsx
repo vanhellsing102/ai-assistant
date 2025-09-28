@@ -6,7 +6,7 @@ import ReactMarkdown from "react-markdown";
 import { GoCopy } from "react-icons/go";
 import socket from "../socket.js";
 
-const TextChat = () => {
+const page = () => {
   const [loading, setLoading] = useState(false);
   const [reply, setReply] = useState("");
   const [langName, setLangName] = useState("Bangla");
@@ -109,4 +109,4 @@ const TextChat = () => {
   );
 };
 
-export default TextChat;
+export default page;

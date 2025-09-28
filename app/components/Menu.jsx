@@ -34,13 +34,13 @@ const navlinks = [
   {
     id: 1,
     route: "/",
-    title: "Text Box",
+    title: "Voice Hub",
     icon: CiText
   },
   {
     id: 2,
-    route: "/voice",
-    title: "Voice Hub",
+    route: "/chat",
+    title: "Text Box",
     icon: MdOutlineKeyboardVoice
   },
   {

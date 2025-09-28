@@ -2,10 +2,10 @@
 import { useEffect, useRef, useState } from "react";
 import { MdKeyboardVoice } from "react-icons/md";
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
-import "../styles/voice.css";
+import "./styles/voice.css";
 import { ThreeDot } from "react-loading-indicators";
-import socket from "../socket.js";
-import allLanguage from "../data/allLanguage.js"
+import socket from "./socket.js";
+import allLanguage from "./data/allLanguage.js";
 
 const page = () => {
     const { transcript, listening, resetTranscript } = useSpeechRecognition();
